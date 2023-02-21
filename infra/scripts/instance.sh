@@ -44,8 +44,9 @@ apt-get install -y docker-ce
 echo "$(date) - INSTALLING kind" >> /home/ubuntu/install.log
 
 mkdir /home/ubuntu/install
-wget "${kind_release}"
-chmod +x "{kind_release}"
+curl -Lo ./kind "${kind_release}"
+chmod +x ./kind
+mv ./kind /usr/local/bin/kind
 
 echo "$(date) - Creating cluster" >> /home/ubuntu/install.log
 kind create cluster --config - <<EOF
