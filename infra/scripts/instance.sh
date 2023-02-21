@@ -63,6 +63,7 @@ EOF
 echo "$(date) - Install kubectl" >> /home/ubuntu/install.log
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm kubectl
 kubectl version --short
 kubectl cluster-info --context kind-kind >> /home/ubuntu/install.log
 cp -r .kube /home/ubuntu/.kube
@@ -70,6 +71,8 @@ chown -R ubuntu:ubuntu /home/ubuntu/.kube
 
 # Install RE operator
 echo "$(date) - INSTALLING Redis Enterprise - with operator" >> /home/ubuntu/install.log
+su ubuntu
+cd /home/ubuntu
 git clone https://github.com/RedisLabs/redis-enterprise-k8s-docs.git
 cd redis-enterprise-k8s-docs/
 kubectl create namespace redis
@@ -79,8 +82,8 @@ while ! kubectl wait --for condition=established --timeout=10s crd/redisenterpri
 
 # Create a RE cluster
 kubectl apply -f examples/v1/rec.yaml
-kubectl port-forward svc/rec-ui 8443:8443
-kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443
+#kubectl port-forward svc/rec-ui 8443:8443
+kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443 &
 pw=$(kubectl get secret rec -o jsonpath="{.data.password}" | base64 --decode) 
 user=$(kubectl get secret rec -o jsonpath="{.data.username}" | base64 --decode) 
 echo "$(date) - RE credentials user: $user - password: $pw" >> /home/ubuntu/install.log
