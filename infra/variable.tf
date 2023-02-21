@@ -17,7 +17,7 @@ variable "clustersize" {
 }
 
 variable "kind_release"{
-  default = "https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64"
+  default = "https://kind.sigs.k8s.io/dl/v0.17.0/kind-linux-amd64"
 }
 
 variable "project" {
