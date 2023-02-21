@@ -36,15 +36,15 @@ echo "$(date) - PREPARE done" >> /home/ubuntu/install.log
 echo "$(date) - INSTALLING docker" >> /home/ubuntu/install.log
 
 # Install docker
-apt-get install software-properties-common
+apt-get install -y software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable edge"
-apt-cache policy docker-ce
+apt-cache policy docker-ce >> /home/ubuntu/install.log
 apt-get install -y docker-ce
 
+# Install kind
 echo "$(date) - INSTALLING kind" >> /home/ubuntu/install.log
 
-mkdir /home/ubuntu/install
 curl -Lo ./kind "${kind_release}"
 chmod +x ./kind
 mv ./kind /usr/local/bin/kind
@@ -60,26 +60,29 @@ nodes:
 - role: worker
 EOF
 
-#tar xvf /home/ubuntu/install/redislabs*.tar -C /home/ubuntu/install
+echo "$(date) - Install kubectl" >> /home/ubuntu/install.log
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --short
+kubectl cluster-info --context kind-kind >> /home/ubuntu/install.log
+cp -r .kube /home/ubuntu/.kube
+chown -R ubuntu:ubuntu /home/ubuntu/.kube
 
-#echo "$(date) - INSTALLING Redis Enterprise - silent installation" >> /home/ubuntu/install.log
+# Install RE operator
+echo "$(date) - INSTALLING Redis Enterprise - with operator" >> /home/ubuntu/install.log
+git clone https://github.com/RedisLabs/redis-enterprise-k8s-docs.git
+cd redis-enterprise-k8s-docs/
+kubectl create namespace redis
+kubectl config set-context --current --namespace=redis
+kubectl apply -f bundle.yaml
+while ! kubectl wait --for condition=established --timeout=10s crd/redisenterpriseclusters.app.redislabs.com ; do sleep 1 ; done
 
-#cd /home/ubuntu/install
-#sudo /home/ubuntu/install/install.sh -y 2>&1 >> /home/ubuntu/install_rs.log
-#sudo adduser ubuntu redislabs
+# Create a RE cluster
+kubectl apply -f examples/v1/rec.yaml
+kubectl port-forward svc/rec-ui 8443:8443
+kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443
+pw=$(kubectl get secret rec -o jsonpath="{.data.password}" | base64 --decode) 
+user=$(kubectl get secret rec -o jsonpath="{.data.username}" | base64 --decode) 
+echo "$(date) - RE credentials user: $user - password: $pw" >> /home/ubuntu/install.log
 
 echo "$(date) - INSTALL done" >> /home/ubuntu/install.log
-
-################
-# NODE external_addr - it runs at each reboot to update it
-echo "${node_id}" > /home/ubuntu/node_index.terraform
-cat <<EOF > /home/ubuntu/node_externaladdr.sh
-#!/bin/bash
-node_external_addr=\$(curl -s ifconfig.me/ip)
-/opt/redislabs/bin/rladmin node ${node_id} external_addr set \$node_external_addr
-EOF
-chown ubuntu /home/ubuntu/node_externaladdr.sh
-chmod u+x /home/ubuntu/node_externaladdr.sh
-/home/ubuntu/node_externaladdr.sh
-
-echo "$(date) - DONE updating RS external_addr" >> /home/ubuntu/install.log
