@@ -26,3 +26,10 @@ do
     kubectl config use-context kind-c$c
     kubectl rollout status sts/rec
 done
+
+if [ "$active_active" == "yes" ]; 
+then
+    echo "$(date) - Setting up active-active"
+
+    kubeinfra/install_loadbalancer.sh
+fi
