@@ -56,6 +56,7 @@ then
     cd kubeinfra
     ./install_loadbalancer.sh
     ./install_ingresscontroller.sh
+    ./add_dnsrecords.sh
     cd ..
 
     ./deploy-rerc.sh

@@ -7,3 +7,11 @@ metadata:
 spec:
   # Add fields here
   nodes: 3
+  # the below for A/A routing
+  ingressOrRouteSpec:
+    apiFqdnUrl: api-rec-c2-redis.lab.local
+    dbFqdnSuffix: -db-rec-c2-redis.lab.local
+    ingressAnnotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      kubernetes.io/ingress.class: nginx
+    method: ingress
