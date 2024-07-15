@@ -4,10 +4,7 @@
 source config.sh
 
 # create empty creds file for all clusters.
-if [ "$active_active" == "yes" ]; 
-then
-    > all-cluster-creds.yaml
-fi
+> all-cluster-creds.yaml
 
 # deploy the REC for all clusters.
 for c in $(seq 1 $num_clusters);
@@ -58,6 +55,7 @@ then
 
     cd kubeinfra
     ./install_loadbalancer.sh
+    ./install_ingresscontroller.sh
     cd ..
 
     ./deploy-rerc.sh
