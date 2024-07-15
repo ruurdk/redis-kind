@@ -1,7 +1,7 @@
 apiVersion: app.redislabs.com/v1
 kind: RedisEnterpriseCluster
 metadata:
-  name: rec
+  name: rec-c1
   labels:
     app: redis-enterprise
 spec:
