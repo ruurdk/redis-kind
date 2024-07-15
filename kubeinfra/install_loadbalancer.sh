@@ -8,6 +8,7 @@ do
     
     kubectl config use-context kind-c$c
     kubectl apply -f $loadbalancer_release    
-    # TODO: check for readiness before continuing, needs rerun now if ingress controller wait stuck
+    while ! kubectl get svc/webhook-service --namespace metallb-system ; do echo "Waiting for metallb service. CTRL-C to exit."; sleep 5; done
+    sleep 5
     kubectl apply -f lb-config-c$c.yaml
 done

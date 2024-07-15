@@ -15,21 +15,20 @@ do
 
     # Create a RE cluster
     kubectl apply -f rec-c$c.yaml
-    #kubectl port-forward svc/rec-ui 8443:8443
     #kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443 &
 
-    sleep 1
+    while ! kubectl get secret rec-c$c; do echo "Waiting for secret rec-c$c. CTRL-C to exit."; sleep 1; done
 
     # output creds.
-    pw=$(kubectl get secret rec-c$c -o jsonpath="{.data.password}" | base64 --decode) 
-    user=$(kubectl get secret rec-c$c -o jsonpath="{.data.username}" | base64 --decode) 
-    echo "$(date) - RE credentials user: $user - password: $pw" 
+    pw=$(kubectl get secret rec-c$c -o jsonpath="{.data.password}") 
+    user=$(kubectl get secret rec-c$c -o jsonpath="{.data.username}") 
+    echo "$(date) - RE credentials user: $(echo $user | base64 --decode) - password: $(echo $pw | base64 --decode)" 
     # write creds to all creds file.
     cat << EOF >> all-cluster-creds.yaml
 apiVersion: v1
 data:
-  password: $(echo $pw | base64)
-  username: $(echo $user | base64)
+  password: $pw
+  username: $user
 kind: Secret
 metadata:
   name: redis-enterprise-rerc-c$c
@@ -48,10 +47,11 @@ do
     kubectl rollout status sts/rec-c$c
 done
 
+
 # Set up A/A artifacts.
 if [ "$active_active" == "yes" ]; 
 then
-    echo "$(date) - Setting up active-active"
+    echo "$(date) - Setting up active-active LB, Ingress, DNS infrastructure"
 
     cd kubeinfra
     ./install_loadbalancer.sh

@@ -1,0 +1,12 @@
+apiVersion: app.redislabs.com/v1alpha1
+kind: RedisEnterpriseActiveActiveDatabase
+metadata:
+  name: db1
+spec:
+  globalConfigurations:
+    databaseSecretName: db1secret
+    memorySize: 200MB
+    shardCount: 3
+  participatingClusters:
+      - name: rerc-1
+      - name: rerc-2
