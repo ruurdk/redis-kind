@@ -3,8 +3,8 @@ kind: RedisEnterpriseRemoteCluster
 metadata:
   name: rerc2
 spec:
-  recName: rec1
+  recName: rec2
   recNamespace: redis
-  apiFqdnUrl: api-rec1-redis.lab
-  dbFqdnSuffix: -db-rec1-redis.lab
+  apiFqdnUrl: api-rec2-redis.lab
+  dbFqdnSuffix: -db-rec2-redis.lab
   secretName: redis-enterprise-rerc2
