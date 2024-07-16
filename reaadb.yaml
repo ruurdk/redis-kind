@@ -8,5 +8,15 @@ spec:
     memorySize: 200MB
     shardCount: 3
   participatingClusters:
-      - name: rerc-1
-      - name: rerc-2
+      - name: rerc1
+      - name: rerc2
+---
+apiVersion: v1
+data:
+  password: dGVzdAo=             # test
+  username: ZGVtb0ByZWRpcy5jb20K # demo@redis.com
+kind: Secret
+metadata:
+  name: db1secret
+  namespace: redis
+type: Opaque
