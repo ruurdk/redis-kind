@@ -12,6 +12,13 @@ do
     # Share cluster secrets.
     kubectl apply -f all-cluster-creds.yaml
     
-    # Create a RE REMOTE cluster.
-    kubectl apply -f rerc$c.yaml
+    # Create a RE REMOTE cluster - yes we need to do this for all clusters INCLUDING THE LOCAL ONE
+    # but only one ONE SIDE
+    if [ $c -eq 1 ];
+    then
+        for k in $(seq 1 $num_clusters);
+        do
+            kubectl apply -f rerc$k.yaml
+        done
+    fi
 done
