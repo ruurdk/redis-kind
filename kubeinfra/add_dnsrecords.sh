@@ -16,8 +16,8 @@ do
     ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
     # add records for this cluster to hosts file
     cat << EOF >> hosts.txt
-  $ip api-rec-c$c-redis.lab.local
-  $ip -db-rec-c$c-redis.lab.local
+  $ip api-rec$c-redis.lab
+  $ip -db-rec$c-redis.lab  
 EOF
 done
 

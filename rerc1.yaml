@@ -1,0 +1,10 @@
+apiVersion: app.redislabs.com/v1alpha1
+kind: RedisEnterpriseRemoteCluster
+metadata:
+  name: rerc1
+spec:
+  recName: rec2
+  recNamespace: redis
+  apiFqdnUrl: api-rec2-redis.lab
+  dbFqdnSuffix: -db-rec2-redis.lab
+  secretName: redis-enterprise-rerc1

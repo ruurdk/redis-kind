@@ -14,14 +14,14 @@ do
     kubectl config use-context kind-c$c
 
     # Create a RE cluster
-    kubectl apply -f rec-c$c.yaml
+    kubectl apply -f rec$c.yaml
     #kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443 &
 
-    while ! kubectl get secret rec-c$c; do echo "Waiting for secret rec-c$c. CTRL-C to exit."; sleep 1; done
+    while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 1; done
 
     # output creds.
-    pw=$(kubectl get secret rec-c$c -o jsonpath="{.data.password}") 
-    user=$(kubectl get secret rec-c$c -o jsonpath="{.data.username}") 
+    pw=$(kubectl get secret rec$c -o jsonpath="{.data.password}") 
+    user=$(kubectl get secret rec$c -o jsonpath="{.data.username}") 
     echo "$(date) - RE credentials user: $(echo $user | base64 --decode) - password: $(echo $pw | base64 --decode)" 
     # write creds to all creds file.
     cat << EOF >> all-cluster-creds.yaml
@@ -31,7 +31,7 @@ data:
   username: $user
 kind: Secret
 metadata:
-  name: redis-enterprise-rerc-c$c
+  name: redis-enterprise-rerc$c
 type: Opaque
 ---
 EOF
@@ -44,7 +44,7 @@ do
     echo "$(date) - Waiting for REC on cluster $c to be operational" 
     
     kubectl config use-context kind-c$c
-    kubectl rollout status sts/rec-c$c
+    kubectl rollout status sts/rec$c
 done
 
 

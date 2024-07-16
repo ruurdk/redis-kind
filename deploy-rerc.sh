@@ -13,5 +13,5 @@ do
     kubectl apply -f all-cluster-creds.yaml
     
     # Create a RE REMOTE cluster.
-    kubectl apply -f rerc-c$c.yaml
+    kubectl apply -f rerc$c.yaml
 done

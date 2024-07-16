@@ -1,7 +1,7 @@
 apiVersion: app.redislabs.com/v1
 kind: RedisEnterpriseCluster
 metadata:
-  name: rec-c2
+  name: rec1
   labels:
     app: redis-enterprise
 spec:
@@ -14,8 +14,8 @@ spec:
   uiServiceType: LoadBalancer
   # the below for A/A routing
   ingressOrRouteSpec:
-    apiFqdnUrl: api-rec-c2-redis.lab.local
-    dbFqdnSuffix: -db-rec-c2-redis.lab.local
+    apiFqdnUrl: api-rec1-redis.lab
+    dbFqdnSuffix: -db-rec1-redis.lab
     ingressAnnotations:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       kubernetes.io/ingress.class: nginx
