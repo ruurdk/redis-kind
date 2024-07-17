@@ -35,7 +35,22 @@ metadata:
 type: Opaque
 ---
 EOF
-
+    echo "$(date) - Enabling admission controller"
+    
+    # get cert
+    CERT=$(kubectl get secret admission-tls -o jsonpath='{.data.cert}')
+    # fill namespace
+    sed 's/OPERATOR_NAMESPACE/redis/g' webhook.yaml | kubectl create -f -
+    # prepare patch for cert.
+    cat > modified-webhook.yaml <<EOF
+webhooks:
+- name: redisenterprise.admission.redislabs
+  clientConfig:
+    caBundle: $CERT
+  admissionReviewVersions: ["v1beta1"]
+EOF
+    # apply patch
+    kubectl patch ValidatingWebhookConfiguration redis-enterprise-admission --patch "$(cat modified-webhook.yaml)"
 done
 
 # Waiting for REC to come up.
