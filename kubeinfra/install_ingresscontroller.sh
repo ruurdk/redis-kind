@@ -9,6 +9,8 @@ do
     kubectl config use-context kind-c$c
     kubectl apply -f $ingresscontroller_release
 
+    # wait for all pods to be running
+    kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
     # wait for ingress controller to have a loadbalancer (external) ip.
     # NOTE: THIS BELOW IS NGINX SPECIFIC
     until kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done

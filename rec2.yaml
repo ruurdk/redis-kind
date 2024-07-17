@@ -8,10 +8,10 @@ spec:
   # Add fields here
   nodes: 3
   # need to expose api port on LB to make it reachable from other cluster
-  services:
-    apiService: 
-      type: LoadBalancer
-  uiServiceType: LoadBalancer
+  #services:
+  #  apiService: 
+  #    type: LoadBalancer
+  #uiServiceType: LoadBalancer
   # the below for A/A routing
   ingressOrRouteSpec:
     apiFqdnUrl: api-rec2-redis.lab
