@@ -3,9 +3,8 @@
 # load vars
 source ../config.sh
 
-# needed these lines to make >1 cluster come up
-sysctl fs.inotify.max_user_watches=524288
-sysctl fs.inotify.max_user_instances=512
+cp 10-kind.conf /etc/sysctl.d/
+sysctl -p
 
 # may need this for OS prep on the host
 #echo 'DNSStubListener=no' | tee -a /etc/systemd/resolved.conf
