@@ -9,10 +9,11 @@ do
     kubectl config use-context kind-c$c
     kubectl apply -f $ingresscontroller_release
 
+    # NOTE: THE BELOW IS NGINX SPECIFIC
+    
     # wait for all pods to be running
     kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
-    # wait for ingress controller to have a loadbalancer (external) ip.
-    # NOTE: THIS BELOW IS NGINX SPECIFIC
+    # wait for ingress controller to have a loadbalancer (external) ip.    
     until kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done
     # enable ssl-passthrough
     kubectl patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]'

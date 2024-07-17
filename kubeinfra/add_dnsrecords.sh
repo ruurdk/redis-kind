@@ -1,4 +1,6 @@
 #!/bin/bash
+# In this shell code we add records to K8s coredns to run without external DNS services.
+# This has some drawbacks (see below), but works for this testing framework
 
 source ../config.sh
 
@@ -15,9 +17,10 @@ do
     # get external IP for THIS cluster
     ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
     # add records for this cluster to hosts file
+    # NOTE the line for the database is hardcoded for >>>db1<<< as CoreDNS doesn't support wildcards in hosts.
     cat << EOF >> hosts.txt
   $ip api-rec$c-redis.lab
-  $ip -db-rec$c-redis.lab  
+  $ip db1-db-rec$c-redis.lab  
 EOF
 done
 

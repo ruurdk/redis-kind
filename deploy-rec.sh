@@ -15,8 +15,6 @@ do
 
     # Create a RE cluster
     kubectl apply -f rec$c.yaml
-    #kubectl port-forward --address localhost,0.0.0.0  svc/rec-ui 8443:8443 &
-
     while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 1; done
 
     # output creds.

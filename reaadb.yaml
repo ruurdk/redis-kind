@@ -7,6 +7,8 @@ spec:
     databaseSecretName: db1secret
     memorySize: 200MB
     shardCount: 3
+    tlsMode: enabled
+    defaultUser: true
   participatingClusters:
       - name: rerc1
       - name: rerc2

@@ -7,7 +7,7 @@ metadata:
 spec:
   # Add fields here
   nodes: 3
-  # need to expose api port on LB to make it reachable from other cluster (or use ingress)
+  # undocumenting the below will enable LB access to API/UI if no Ingress is available.
   #services:
   #  apiService: 
   #    type: LoadBalancer

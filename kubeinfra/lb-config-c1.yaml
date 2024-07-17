@@ -5,6 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:  
+  # NOTE this is in the Docker IPAM network range, so routed externally and between clusters
   - 172.18.253.2-172.18.253.254
 ---
 apiVersion: metallb.io/v1beta1
