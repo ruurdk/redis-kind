@@ -3,6 +3,25 @@
 # load vars
 source config.sh
 
+# K8s infrastructure.
+if [ "$install_loadbalancer" == "yes" ];
+then
+    echo "$(date) - Installing LoadBalancer"
+
+    cd kubeinfra
+    ./install_loadbalancer.sh
+    cd ..
+fi
+
+if [ "$install_ingress" == "yes" ];
+then
+    echo "$(date) - Installing Ingress"
+
+    cd kubeinfra
+    ./install_ingresscontroller.sh
+    cd ..
+fi
+
 # create empty creds file for all clusters.
 > all-cluster-creds.yaml
 
@@ -49,6 +68,24 @@ webhooks:
 EOF
     # apply patch
     kubectl patch ValidatingWebhookConfiguration redis-enterprise-admission --patch "$(cat modified-webhook.yaml)"
+
+    # patch the rec ingress spec for knowns controllers.
+    if [ "$install_ingress" == "yes" ];
+    then
+      echo "$(date) - Patching REC to use Ingress $ingresscontroller_type"    
+
+      case $ingresscontroller_type in 
+      "ingress-nginx")
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"nginx\", \"nginx.ingress.kubernetes.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
+        ;;
+      "haproxy-ingress")
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"haproxy\", \"ingress.kubernetes.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
+        ;;
+      *)
+        echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"
+        ;;
+      esac
+    fi
 done
 
 # Waiting for REC to come up.
@@ -59,25 +96,6 @@ do
     kubectl config use-context kind-c$c
     kubectl rollout status sts/rec$c
 done
-
-# K8s infrastructure.
-if [ "$install_loadbalancer" == "yes" ];
-then
-    echo "$(date) - Installing LoadBalancer"
-
-    cd kubeinfra
-    ./install_loadbalancer.sh
-    cd ..
-fi
-
-if [ "$install_ingress" == "yes" ];
-then
-    echo "$(date) - Installing Ingress"
-
-    cd kubeinfra
-    ./install_ingresscontroller.sh
-    cd ..
-fi
 
 if [ "$patch_dns" == "yes" ];
 then
