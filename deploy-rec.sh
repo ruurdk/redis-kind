@@ -60,17 +60,37 @@ do
     kubectl rollout status sts/rec$c
 done
 
+# K8s infrastructure.
+if [ "$install_loadbalancer" == "yes" ];
+then
+    echo "$(date) - Installing LoadBalancer"
+
+    cd kubeinfra
+    ./install_loadbalancer.sh
+    cd ..
+fi
+
+if [ "$install_ingress" == "yes" ];
+then
+    echo "$(date) - Installing Ingress"
+
+    cd kubeinfra
+    ./install_ingresscontroller.sh
+    cd ..
+fi
+
+if [ "$patch_dns" == "yes" ];
+then
+    echo "$(date) - Adding cluster fqdns to K8s DNS"
+
+    cd kubeinfra
+    ./add_dnsrecords.sh
+    cd ..
+fi
 
 # Set up A/A artifacts.
 if [ "$active_active" == "yes" ]; 
 then
-    echo "$(date) - Setting up active-active LB, Ingress, DNS infrastructure"
-
-    cd kubeinfra
-    ./install_loadbalancer.sh
-    ./install_ingresscontroller.sh
-    ./add_dnsrecords.sh
-    cd ..
-
+    echo "$(date) - Deploying active-active remote cluster CRDs."
     ./deploy-rerc.sh
 fi

@@ -8,7 +8,7 @@ By default, this set of scripts will set up a fully functioning Redis Active-Act
 - To run Kind, make sure you have Docker, kind and kubectl installed, and tune the OS if needed (see the prereqs folder for some helper scripts).
 - Run the create-all.sh script.
 - Wait 5 mins.
-- Run the testlink.sh script to test connectivity (A/A) on the database level.
+- Run the testlink.sh script to test connectivity (A/A) on the database level. Note: if some tests fail, allow some minutes for the deployments to stabilize.
 
 ## Stopping quickly 
 
@@ -20,11 +20,10 @@ Basics:
 
 - Multiple (2) k8s clusters in Kind
 - Deploy Redis Enterprise in all clusters, including the admission controller.
+- Optional: a loadbalancer (metallb) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
+- Optional: an ingress controller (ngress-nginx) to facilitate RE A/A created Ingress resources.
+- Optional: patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
 
-In addition, for Active/Active (default), it further deploys:
-
-- A loadbalancer (metallb) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
-- The remote cluster api & database fqdn in kube-dns (coredns) hosts file to resolve the cluster api and databases in remote clusters.
-- An ingress controller (ngress-nginx) to facilitate RE A/A created Ingress resources.
+In addition, when Active/Active is enabled, it further deploys:
 - A/A artifacts (Remote cluster CRDs - the 'RERC')
 - A CRDB (A/A database)
