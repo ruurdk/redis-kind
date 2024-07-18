@@ -15,7 +15,18 @@ do
 
     kubectl config use-context kind-c$c
     # get external IP for THIS cluster
-    ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    case $ingresscontroller_type in 
+      "ingress-nginx")
+        ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+      "haproxy-ingress")
+        ip=$(kubectl get svc/haproxy-ingress -n ingress-controller --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+      *)
+        echo "$(date) - WARNING - couldn't get external IP for unknown ingress, DNS setup will be incorrect"
+        ;;
+    esac
+
     # add records for this cluster to hosts file
     # NOTE the line for the database is hardcoded for >>>db1<<< as CoreDNS doesn't support wildcards in hosts.
     cat << EOF >> hosts.txt

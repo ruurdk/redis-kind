@@ -79,7 +79,7 @@ EOF
         kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"nginx\", \"nginx.ingress.kubernetes.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
         ;;
       "haproxy-ingress")
-        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"haproxy\", \"ingress.kubernetes.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"haproxy\", \"haproxy-ingress.github.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
         ;;
       *)
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"

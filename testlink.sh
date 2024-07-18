@@ -14,7 +14,17 @@ sed 's,REDIS_IMAGE,'"$RIMAGE"',g' rediscli.yaml | kubectl apply -f -
 db_clusterip=$(kubectl get svc/db1 -o jsonpath="{.spec.clusterIP}")
 db_port=$(kubectl get svc/db1 -o jsonpath="{.spec.ports[0].port}")
 hostname=$(kubectl get ing/db1 -o jsonpath="{.spec.rules[0].host}")
-lb_ip=$(kubectl get ing/db1 -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+case $ingresscontroller_type in
+        "ingress-nginx")
+        lb_ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+        "haproxy-ingress")
+        lb_ip=$(kubectl get svc/haproxy-ingress -n ingress-controller --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+        *)
+        lb_ip="<UNKNOWN>"
+        ;;
+esac
 
 # TODO: use a DB with username/password, for now it's working with default user.
 #username=$(kubectl get secret db1secret -o jsonpath="{.data.username}" | base64 --decode)
@@ -37,7 +47,17 @@ kubectl exec -it pod/rediscli -- bash -c "redis-cli -h $hostname -p 443 --insecu
 # get remote hostname/ip directly from cluster 2, alternatively could get it through rerc and dns
 kubectl config use-context kind-c2
 remote_hostname=$(kubectl get ing/db1 -o jsonpath="{.spec.rules[0].host}")
-remote_lb_ip=$(kubectl get ing/db1 -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+case $ingresscontroller_type in
+        "ingress-nginx")
+        remote_lb_ip=$(kubectl get svc/ingress-nginx-controller -n ingress-nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+        "haproxy-ingress")
+        remote_lb_ip=$(kubectl get svc/haproxy-ingress -n ingress-controller --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+        *)
+        remote_lb_ip="<UNKNOWN>"
+        ;;
+esac
 kubectl config use-context kind-c1
 
 echo "$(date) - REMOTE cluster"
