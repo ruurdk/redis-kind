@@ -6,8 +6,8 @@ source config.sh
 for c in $(seq 1 $num_clusters);
 do
     echo "$(date) - INSTALLING Redis Enterprise - with operator on cluster $c" 
-    git clone $operator_src
-    cd $operator_dir
+    git clone $operator_release reop
+    cd reop
 
     kubectl config use-context kind-c$c
     kubectl create namespace redis
@@ -17,5 +17,5 @@ do
     while ! kubectl wait --for condition=established --timeout=10s crd/redisenterpriseclusters.app.redislabs.com ; do echo "Waiting for CRD to be established." ; sleep 1 ; done
 
     cd ..
-    rm -rf $operator_dir
+    rm -rf reop
 done

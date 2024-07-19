@@ -8,12 +8,12 @@ do
 
     kubectl config use-context kind-c$c
     releasename="ingresscontroller_release_${ingresscontroller_type/-/_}"
-    kubectl apply -f ${!releasename}
 
     # Ingress specific configs
     case $ingresscontroller_type in
         "ingress-nginx")
-            echo "$(date) - Ingress Nginx specific config."
+            echo "$(date) - Installing $ingresscontroller_type."
+            kubectl apply -f ${!releasename}
     
             # wait for all pods to be running
             kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
@@ -23,7 +23,8 @@ do
             kubectl patch deployment -n ingress-nginx ingress-nginx-controller --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"--enable-ssl-passthrough"}]'       
             ;;
         "haproxy-ingress")
-            echo "$(date) - HAproxy Ingress specific config."
+            echo "$(date) - Installing $ingresscontroller_type."
+            kubectl apply -f ${!releasename}
 
             # we need a role on the nodes to run this thing. TODO: make this nices to only select workers.
             kubectl label node --all role=ingress-controller
@@ -34,8 +35,53 @@ do
             # wait for ingress controller to have a loadbalancer (external) ip.    
             until kubectl get svc/haproxy-ingress -n ingress-controller --output=jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done            
             ;;
+        # the F5 one.
+        "nginx-ingress") 
+            echo "$(date) - Installing $ingresscontroller_type."
+            
+            # no single manifest, the release is a git repo.
+            git clone ${!releasename} kubernetes-ingress
+            cd kubernetes-ingress
+
+            # ns + admin account.
+            kubectl apply -f deployments/common/ns-and-sa.yaml
+            # rbac.
+            kubectl apply -f deployments/rbac/rbac.yaml
+
+            # settings.
+            kubectl apply -f deployments/common/nginx-config.yaml
+            # ingressclass
+            kubectl apply -f deployments/common/ingress-class.yaml            
+            
+            # patch in the ingressclass.kubernetes.io/is-default-class annotation to apply to Ingresses without IngressClass.
+            # seems not needed as nginx complains/warns but still picks it up.
+            #kubectl patch ingressclass nginx --type='json' -p='[{"op": "add", "path": "/metadata/annotations", "value": {"ingressclass.kubernetes.io/is-default-class": "true"}}]'
+
+            # CRDs.
+            kubectl apply -f config/crd/bases/k8s.nginx.org_virtualservers.yaml
+            kubectl apply -f config/crd/bases/k8s.nginx.org_virtualserverroutes.yaml
+            kubectl apply -f config/crd/bases/k8s.nginx.org_transportservers.yaml
+            kubectl apply -f config/crd/bases/k8s.nginx.org_policies.yaml
+            kubectl apply -f config/crd/bases/k8s.nginx.org_globalconfigurations.yaml
+
+            # Actual Ingress Controller.
+            kubectl apply -f deployments/deployment/nginx-ingress.yaml
+            # line for Nginx Plus
+            #kubectl apply -f deployments/deployment/nginx-plus-ingress.yaml
+            
+            # enable tls-passthrough (NOTE: this isn't the same as the SSL passthrough argument on the regular nginx).
+            # Only supported through Custom Resources (TransportServer) and not through regular Ingress: https://github.com/nginxinc/kubernetes-ingress/issues/1057
+            # That implementation is in rec creation.
+            kubectl patch deployment -n nginx-ingress nginx-ingress --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value":"-enable-tls-passthrough"}]'       
+
+            # deploy service.
+            kubectl apply -f deployments/service/loadbalancer.yaml
+
+            cd ..
+            rm -rf kubernetes-ingress/
+            ;;
         *)
-            echo "$(date) - no patches for unknown Ingress $ingresscontroller_type"
+            echo "$(date) - Unknown Ingress $ingresscontroller_type, skipping installation."
             ;;
     esac
 done

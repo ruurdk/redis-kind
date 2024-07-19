@@ -1,0 +1,15 @@
+apiVersion: k8s.nginx.org/v1
+kind: TransportServer
+metadata:
+  name: TS_NAME
+spec:
+  listener:
+    name: tls-passthrough
+    protocol: TLS_PASSTHROUGH
+  host: HOSTNAME
+  upstreams:
+  - name: upstream
+    service: SERVICE
+    port: PORT
+  action:
+    pass: upstream

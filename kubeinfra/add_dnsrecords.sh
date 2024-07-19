@@ -22,6 +22,9 @@ do
       "haproxy-ingress")
         ip=$(kubectl get svc/haproxy-ingress -n ingress-controller --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ;;
+      "nginx-ingress")
+        ip=$(kubectl get svc/nginx-ingress -n nginx-ingress --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
       *)
         echo "$(date) - WARNING - couldn't get external IP for unknown ingress, DNS setup will be incorrect"
         ;;
