@@ -10,6 +10,7 @@ ingresscontroller_release_nginx_ingress="https://github.com/nginxinc/kubernetes-
 
 # SETTINGS.
 num_clusters=2
+enable_admissioncontroller=yes
 install_ingress=yes
 install_loadbalancer=yes
 ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress

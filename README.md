@@ -19,7 +19,7 @@ Run the delete-all.sh script.
 Basics:
 
 - Multiple (2) k8s clusters in Kind.
-- Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters, including the admission controller.
+- Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters, including the admission controller (Optional).
 - Optional: a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
 - Optional: an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
 - Optional: patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
@@ -31,7 +31,7 @@ In addition, when Active/Active is enabled, it further deploys:
 ## Good to know
 
 - There are multiple haproxy ingresses. One from [HAProxy Inc.](https://github.com/haproxytech/kubernetes-ingress) and one from [jcmoraisjr](https://github.com/jcmoraisjr/haproxy-ingress). This is tested with the latter one.
-- There are multiple nginx ingresses. So far this is tested with the [kubernetes 'ingress-nginx'](https://github.com/kubernetes/ingress-nginx).
+- There are multiple nginx ingresses. So far this is tested with the [kubernetes 'ingress-nginx'](https://github.com/kubernetes/ingress-nginx). In addition. the [Nginx Inc. (F5) Ingress Nginx Controller](https://docs.nginx.com/nginx-ingress-controller/overview/design/) works, but does not allow SSL/TLS passthrough via regular Ingress Kubernetes resources, so routing will require (manual) creation of Custom [TransportServer](https://docs.nginx.com/nginx-ingress-controller/configuration/transportserver-resource/) resources.
 
 ## Caveats / todos
 
