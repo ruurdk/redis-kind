@@ -10,6 +10,8 @@ echo "$(date) - Deploying test cli with image $RIMAGE"
 
 # spin redis enterprise pod to run redis-cli
 sed 's,REDIS_IMAGE,'"$RIMAGE"',g' rediscli.yaml | kubectl apply -f -
+# wait for it to be up
+kubectl wait --for=condition=ready pod rediscli --timeout=120s
 
 db_clusterip=$(kubectl get svc/db1 -o jsonpath="{.spec.clusterIP}")
 db_port=$(kubectl get svc/db1 -o jsonpath="{.spec.ports[0].port}")
