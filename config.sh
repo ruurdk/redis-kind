@@ -2,6 +2,8 @@
 
 # RELEASES.
 kind_release="https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64"
+#  check https://github.com/kubernetes-sigs/kind/releases: a specific k8s image version should be formatted as: kindest/node:v<version>@sha256:<sha>
+k8s_release="latest"        
 operator_release=https://github.com/RedisLabs/redis-enterprise-k8s-docs.git
 loadbalancer_release=https://raw.githubusercontent.com/metallb/metallb/v0.14.6/config/manifests/metallb-native.yaml
 ingresscontroller_release_ingress_nginx=https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
