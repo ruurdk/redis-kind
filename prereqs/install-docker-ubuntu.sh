@@ -14,5 +14,5 @@ add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(
 apt-cache policy docker-ce 
 apt-get install -y docker-ce
 
-# Install yq
-apt-get install -y yq
+# Install jq & yq
+apt-get install -y jq yq
