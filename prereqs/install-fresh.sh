@@ -14,5 +14,8 @@ sysctl -p
 #sysctl -w net.ipv4.ip_local_port_range="40000 65535"
 #echo "net.ipv4.ip_local_port_range = 40000 65535" >> /etc/sysctl.conf
 
-./install-docker-ubuntu.sh
+./install-docker-linux.sh
 ./install-kind.sh
+./install-kubectl.sh
+
+echo "$(date) - Prereq installation finished, please reboot to ensure shell reload (to have non-root access to docker)!"

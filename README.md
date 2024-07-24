@@ -2,17 +2,21 @@
 
 By default, this set of scripts will set up a fully functioning Redis [Active-Active database](https://redis.io/active-active/) distributed over 2 Redis clusters running on seperate vanilla/community k8s clusters deployed in [kind](https://kind.sigs.k8s.io/) (Kubernetes in Docker).
 
+## Requirements
+
+A single Linux - Debian 12 or Ubuntu 24 - host with enough resources (see at the bottom for validated configurations).
+Some tools and OS tuning is required. Run the prereqs/install-fresh script and Reboot.
+
 ## Getting started quickly
 
-- Provision a single Linux host with enough resources (4 vCPU and 16GB of RAM should do) - tested on Debian and Ubuntu.
-- As prereqs, make sure you have Docker, kind and kubectl installed, and tune the OS if needed (see the prereqs folder for some helper scripts).
 - Run the create-all.sh script.
-- Wait ~5 mins.
+- Wait 5-10 mins depending on the hardware.
 - Run the testlink.sh script to test connectivity (A/A) at the database level. Note: if some tests fail, allow some minutes for the deployments to fully stabilize.
 
 ## Stopping quickly 
 
 Run the delete-all.sh script.
+
 
 ## What it deploys
 
@@ -39,3 +43,17 @@ In addition, when Active/Active is enabled, it further deploys:
 - See the TODOs in the source.
 - Currently untested (and probably not working) for >2 clusters in A/A.
 - This is a scripted deployment, so not all steps are idempotent. If you change the config, you may need to tear down and recreate to get consistent again.
+
+### Minimum hardware requirements
+
+The minimum setup requires 16GB of RAM, a 30GB OS disk, and >4 *physical CPU cores*.
+
+Some tested configs that work:
+- physical i5-9600K (6 cores @ 4.5 GHz)
+- GCP n2-standard-8 (8 vCPU - 4 cores @ 2.1-2.8 GHz)
+- AWS t3.2xlarge (8 vCPU @ 2.5 GHz)
+
+What won't work:
+- GCP n2-standard-4 (4 vCPU - 2 cores @ 2.1-2.8 GHz)
+- GCP c2-standard-4 (4 vCPU - 2 cores @ 3.1 GHz)
+- AWS t3.xlarge (4 vCPU @ 2.5 GHz)
