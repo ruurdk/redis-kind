@@ -17,7 +17,6 @@ Some tools and OS tuning is required. Run the prereqs/install-fresh script and R
 
 Run the delete-all.sh script.
 
-
 ## What it deploys
 
 Basics:
@@ -27,6 +26,7 @@ Basics:
 - Optional: a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
 - Optional: an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
 - Optional: patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
+- Optional: monitoring through Prometheus + Grafana and [preconfigured Redis dashboards](https://github.com/redis-field-engineering/redis-enterprise-observability/tree/main/grafana).
 
 In addition, when Active/Active is enabled, it further deploys:
 - A/A artifacts (Remote cluster CRDs - the 'RERC')
