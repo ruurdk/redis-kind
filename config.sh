@@ -8,6 +8,8 @@ loadbalancer_release=https://raw.githubusercontent.com/metallb/metallb/v0.14.6/c
 ingresscontroller_release_ingress_nginx=https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
 ingresscontroller_release_haproxy_ingress=https://raw.githubusercontent.com/jcmoraisjr/haproxy-ingress/master/docs/haproxy-ingress.yaml
 ingresscontroller_release_nginx_ingress="https://github.com/nginxinc/kubernetes-ingress.git --branch v3.6.1"
+grafana_dashboards_release="https://github.com/redis-field-engineering/redis-enterprise-observability.git --branch main"
+grafana_dashboards_folder="grafana/dashboards/grafana_v9-11/software/basic/"
 
 # SETTINGS.
 install_loadbalancer=yes

@@ -65,6 +65,12 @@ spec:
             - mountPath: /etc/grafana/provisioning/datasources
               name: grafana-datasources
               readOnly: false
+            - mountPath: /etc/grafana/provisioning/dashboards
+              name: grafana-dashboards-config
+              readOnly: false
+            - mountPath: /var/lib/grafana/dashboards
+              name: grafana-dashboards-redis-all
+              readOnly: false
       volumes:
         - name: grafana-pv
           persistentVolumeClaim:
@@ -73,6 +79,14 @@ spec:
           configMap:
             defaultMode: 420
             name: grafana-datasources
+        - name: grafana-dashboards-redis-all
+          configMap:
+            defaultMode: 420
+            name: grafana-dashboards-redis-all
+        - name: grafana-dashboards-config
+          configMap:
+            defaultMode: 420
+            name: grafana-dashboards-config
 ---
 apiVersion: v1
 kind: Service
@@ -87,3 +101,44 @@ spec:
     app: grafana
   sessionAffinity: None
   type: LoadBalancer
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-config
+  namespace: monitoring
+data:
+  dashboards.yaml: |-
+    apiVersion: 1
+    providers: 
+      - name: 'Redis'
+        updateIntervalSeconds: 10
+        allowUiUpdates: true
+        options:
+          path: /var/lib/grafana/dashboards
+          foldersFromFilesStructure: true
+        type: file
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  prometheus.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+               "access":"proxy",
+                "editable": true,
+                "name": "prometheus",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://prometheus-operated:9090",
+                "version": 1,
+                "uid": "DS_PROMETHEUS"
+            }
+        ]
+    }
+---
