@@ -22,4 +22,7 @@ do
     kubectl apply -f prom-servicemonitor.yaml
     # deploy prometheus 
     kubectl apply -f prom-prom.yaml
+
+    # deploy grafana
+    kubectl apply -f grafana.yaml -n monitoring
 done
