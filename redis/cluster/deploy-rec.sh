@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load vars
-source config.sh
+source ../../config.sh
 
 # create empty creds file for all clusters.
 > all-cluster-creds.yaml
@@ -72,7 +72,7 @@ EOF
         kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"none\"}, \"method\": \"ingress\"}}}"
         # create a TransportServer for the REC api.
         rec_api_hostname=$(kubectl get rec rec$c --output=jsonpath='{.spec.ingressOrRouteSpec.apiFqdnUrl}')
-        sed "s/HOSTNAME/${rec_api_hostname}/g" ts-ssl-template.yaml | sed "s/SERVICE/rec$c/g" | sed "s/PORT/9443/g" | sed "s/TS_NAME/rec-api/g" | kubectl create -f -
+        sed "s/HOSTNAME/${rec_api_hostname}/g" ../../kubeinfra/ingress/ts-ssl-template.yaml | sed "s/SERVICE/rec$c/g" | sed "s/PORT/9443/g" | sed "s/TS_NAME/rec-api/g" | kubectl create -f -
         ;;
       *)
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"
@@ -94,9 +94,9 @@ if [ "$patch_dns" == "yes" ];
 then
     echo "$(date) - Adding cluster fqdns to K8s DNS"
 
-    cd kubeinfra
+    cd ../../kubeinfra/dns
     ./add_dnsrecords.sh
-    cd ..
+    cd -
 fi
 
 # Set up A/A artifacts.

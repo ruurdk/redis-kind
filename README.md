@@ -11,7 +11,7 @@ Some tools and OS tuning is required. Run the prereqs/install-fresh script and R
 
 - Run the create-all.sh script.
 - Wait 5-10 mins depending on the hardware.
-- Run the testlink.sh script to test connectivity (A/A) at the database level. Note: if some tests fail, allow some minutes for the deployments to fully stabilize.
+- Have fun!
 
 ## Stopping quickly 
 

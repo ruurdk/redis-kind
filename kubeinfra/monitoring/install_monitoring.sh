@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../config.sh
+source ../../config.sh
 
 for c in $(seq 1 $num_clusters);
 do
@@ -38,6 +38,4 @@ do
 
     # deploy grafana
     kubectl apply -f grafana.yaml -n monitoring
-
-    
 done

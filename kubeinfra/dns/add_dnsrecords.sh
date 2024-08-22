@@ -2,7 +2,7 @@
 # In this shell code we add records to K8s coredns to run without external DNS services.
 # This has some drawbacks (see below), but works for this testing framework
 
-source ../config.sh
+source ../../config.sh
 
 # create empty hosts file
 > hosts.txt

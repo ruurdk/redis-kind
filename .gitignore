@@ -1,6 +1,7 @@
 *.json
-all-cluster-creds.yaml
-kubeinfra/hosts.txt
-kubeinfra/corednsconfig.yaml
-kubeinfra/newconfig.yaml
-modified-webhook.yaml
+kind/kind-temp.yaml
+kubeinfra/dns/hosts.txt
+kubeinfra/dns/corednsconfig.yaml
+kubeinfra/dns/newconfig.yaml
+redis/cluster/all-cluster-creds.yaml
+redis/cluster/modified-webhook.yaml

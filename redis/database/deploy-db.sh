@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # load vars
-source config.sh
+source ../../config.sh
 
 if [ "$active_active" == "yes" ]; 
 then
