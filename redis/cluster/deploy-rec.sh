@@ -13,6 +13,15 @@ do
     
     kubectl config use-context kind-c$c
 
+    # Create cluster definition from template.
+    yq '.metadata.name = "rec'$c'"' cluster-template.yaml > rec$c.yaml
+    if [ "$active_active" == "yes" ]; then
+      yq -iy '.spec.ingressOrRouteSpec.apiFqdnUrl = "api-rec'$c'-redis.lab"' rec$c.yaml 
+      yq -iy '.spec.ingressOrRouteSpec.dbFqdnSuffix = "-db-rec'$c'-redis.lab"' rec$c.yaml 
+    else
+      yq -iy 'del(.spec.ingressOrRouteSpec)' rec$c.yaml
+    fi
+
     # Create a RE cluster
     kubectl apply -f rec$c.yaml
     while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 1; done
@@ -56,10 +65,11 @@ EOF
     fi
 
     # patch the rec ingress spec for knowns controllers.
+    if [ "$active_active" == "yes" ];
+    then
     if [ "$install_ingress" == "yes" ];
     then
       echo "$(date) - Patching REC to use Ingress $ingresscontroller_type"    
-
       case $ingresscontroller_type in 
       "ingress-nginx")
         kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"nginx\", \"nginx.ingress.kubernetes.io/ssl-passthrough\": \"true\"}, \"method\": \"ingress\"}}}"
@@ -78,6 +88,7 @@ EOF
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"
         ;;
       esac
+    fi
     fi
 done
 

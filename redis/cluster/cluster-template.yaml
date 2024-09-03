@@ -1,21 +1,16 @@
 apiVersion: app.redislabs.com/v1
 kind: RedisEnterpriseCluster
 metadata:
-  name: rec1
+  #name: <generated>
   labels:
     app: redis-enterprise
 spec:
   # Add fields here
-  nodes: 3
-  # undocumenting the below will enable LB access to API/UI if no Ingress is available.
-  #services:
-  #  apiService: 
-  #    type: LoadBalancer
-  #uiServiceType: LoadBalancer
-  # the below for A/A routing
+  nodes: 3  
+  # A/A routing - will be removed when A/A is not enabled
   ingressOrRouteSpec:
-    apiFqdnUrl: api-rec1-redis.lab
-    dbFqdnSuffix: -db-rec1-redis.lab
+    #apiFqdnUrl: <generated>
+    #dbFqdnSuffix: <generated>
     ingressAnnotations:
       # we need to add this annotation or the operator will choke - will be patched with the correct value later.
       kubernetes.io/ingress.class: nginx

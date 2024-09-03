@@ -1,7 +1,12 @@
 *.json
 kind/kind-temp.yaml
+kind/kind-cluster-c*.yaml
+kubeinfra/loadbalancer/ipaddresspool-c*.yaml
 kubeinfra/dns/hosts.txt
 kubeinfra/dns/corednsconfig.yaml
 kubeinfra/dns/newconfig.yaml
 redis/cluster/all-cluster-creds.yaml
 redis/cluster/modified-webhook.yaml
+redis/cluster/rec*.yaml
+redis/cluster/rerc*.yaml
+redis/database/reaadb.yaml

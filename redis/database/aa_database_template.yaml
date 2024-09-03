@@ -10,5 +10,5 @@ spec:
     tlsMode: enabled
     defaultUser: true
   participatingClusters:
-      - name: rerc1
-      - name: rerc2
+      # will be generated based on number in the format: - name: rerc1
+      

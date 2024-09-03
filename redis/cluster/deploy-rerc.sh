@@ -17,6 +17,14 @@ do
     then
         for k in $(seq 1 $num_clusters);
         do
+            # Create definition from template.
+            yq '.metadata.name = "rerc'$k'"' remotecluster-template.yaml > rerc$k.yaml
+            yq -iy '.spec.recName = "rec'$k'"' rerc$k.yaml 
+            yq -iy '.spec.apiFqdnUrl = "api-rec'$k'-redis.lab"' rerc$k.yaml 
+            yq -iy '.spec.dbFqdnSuffix = "-db-rec'$k'-redis.lab"' rerc$k.yaml 
+            yq -iy '.spec.secretName = "redis-enterprise-rerc'$k'"' rerc$k.yaml 
+
+            # Apply the definition.
             kubectl apply -f rerc$k.yaml
         done
     fi

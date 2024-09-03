@@ -8,15 +8,20 @@ do
     echo "$(date) - Creating cluster $c"
     echo "$(date) - Using k8s image $k8s_release"
 
+    # generate cluster manifest from template.
+    yq '. |= { name: "c'$c'" } + .' kind-cluster-template.yaml > kind-cluster-c$c.yaml
+
+    # add network ranges.
+    yq -iy '.networking.podSubnet = "10.1'$c'0.0.0/16"' kind-cluster-c$c.yaml
+    yq -iy '.networking.serviceSubnet = "10.1'$c'1.0.0/16"' kind-cluster-c$c.yaml
+    
     # splice specific kind version into deployment yaml.
     if [ ! "$k8s_release" == "latest" ]
     then
-        yq '.nodes[].image = "'$k8s_release'"'  kind-cluster-c$c.yaml > kind-temp.yaml
-    else
-        cat kind-cluster-c$c.yaml > kind-temp.yaml
+        yq -iy '.nodes[].image = "'$k8s_release'"' kind-cluster-c$c.yaml
     fi
 
-    while ! kind create cluster --config kind-temp.yaml ; do echo "Attempting to create cluster $c again after failure." ; done
+    while ! kind create cluster --config kind-cluster-c$c.yaml ; do echo "Attempting to create cluster $c again after failure." ; done
     
     # Echo endpoints
     kubectl cluster-info --context kind-c$c

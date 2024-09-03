@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ippool1
+  namespace: metallb-system
+spec:
+  addresses:  
+  # NOTE this will be generated in the Docker IPAM (172.18.0.0/16) network range, so routed externally and between clusters.

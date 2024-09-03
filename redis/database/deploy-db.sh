@@ -8,6 +8,14 @@ then
     echo "$(date) - DEPLOYING Redis Enterprise A/A database on k8s cluster 1" 
 
     kubectl config use-context kind-c1
+
+    # Prepare reaadb manifest based on template.
+    cp aa_database_template.yaml reaadb.yaml
+    for c in $(seq 1 $num_clusters);
+    do
+        yq -iy '.spec.participatingClusters += [{ "name" : "rerc'$c'"}]' reaadb.yaml
+    done
+
     # do the below (secret, db creation) in 2 steps or the admission controller will deny it
     kubectl apply -f reaadb_secret.yaml
     while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
