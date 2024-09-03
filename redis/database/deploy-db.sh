@@ -44,7 +44,12 @@ then
     fi
 
     # wait for replication link to first remote cluster to get up
-    while ! kubectl wait --for jsonpath="{.status.participatingClusters[1].replicationStatus}"=up --timeout=120s reaadb db1 ; do echo "Waiting for db1 replication link to first remote cluster to be up." ; sleep 5 ; done
+    if [ $num_clusters -gt 1 ];
+    then
+        while ! kubectl wait --for jsonpath="{.status.participatingClusters[1].replicationStatus}"=up --timeout=120s reaadb db1 ; do echo "Waiting for db1 replication link to first remote cluster to be up." ; sleep 5 ; done
+    else
+        echo "$(date) - Skipping replication link check with a single cluster."
+    fi
 fi
 
 # TODO implement non-A/A db creation.

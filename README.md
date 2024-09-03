@@ -21,7 +21,7 @@ Run the delete-all.sh script.
 
 Basics:
 
-- Multiple (2) k8s clusters in Kind.
+- A configurable number (default = 2) k8s clusters in Kind
 - Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters, including the admission controller (Optional).
 - Optional: a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
 - Optional: an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
@@ -40,13 +40,11 @@ In addition, when Active/Active is enabled, it further deploys:
 ## Caveats / todos
 
 - DNS patching is hardwired to api and a named 'db1' database. 
-- See the TODOs in the source.
-- Currently untested (and probably not working) for >2 clusters in A/A.
 - This is a scripted deployment, so not all steps are idempotent. If you change the config, you may need to tear down and recreate to get consistent again.
 
 ### Minimum hardware requirements
 
-The minimum setup requires 16GB of RAM, a 30GB OS disk, and >4 *physical CPU cores*.
+The minimum proper setup with 2 participating Redis clusters requires 16GB of RAM, a 30GB OS disk, and >4 *physical CPU cores*.
 
 Some tested configs that work:
 - physical i5-9600K (6 cores @ 4.5 GHz)
