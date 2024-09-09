@@ -14,7 +14,7 @@ grafana_dashboards_folder="grafana/dashboards/grafana_v9-11/software/basic/"
 # SETTINGS.
 install_loadbalancer=yes
 install_ingress=yes
-ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress
+ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress
 install_monitoring=no
 patch_dns=yes
 num_clusters=2

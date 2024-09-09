@@ -4,6 +4,9 @@
 source config.sh
 
 echo "$(date) - creating kind clusters and installing RE"
+
+./sanity-check.sh
+
 cd kind
 ./create-kind-clusters.sh
 cd ..

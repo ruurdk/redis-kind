@@ -4,14 +4,13 @@ By default, this set of scripts will set up a fully functioning Redis [Active-Ac
 
 ## Requirements
 
-A single Linux - Debian 12 or Ubuntu 24 - host with enough resources (see at the bottom for validated configurations).
+A single Linux - Debian 12 or Ubuntu 24 - x86 host with enough resources (see at the bottom for validated configurations).
 Some tools and OS tuning is required. Run the prereqs/install-fresh script and Reboot.
 
 ## Getting started quickly
 
 - Run the create-all.sh script.
 - Wait 5-10 mins depending on the hardware.
-- Have fun!
 
 ## Stopping quickly 
 
@@ -22,15 +21,19 @@ Run the delete-all.sh script.
 Basics:
 
 - A configurable number (default = 2) k8s clusters in Kind
-- Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters, including the admission controller (Optional).
-- Optional: a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
-- Optional: an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
-- Optional: patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
-- Optional: monitoring through Prometheus + Grafana and [preconfigured Redis dashboards](https://github.com/redis-field-engineering/redis-enterprise-observability/tree/main/grafana).
+- Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters.
+- Create Redis clusters in all k8s clusters. 
 
-In addition, when Active/Active is enabled, it further deploys:
-- A/A artifacts (Remote cluster CRDs - the 'RERC')
-- A CRDB (A/A database)
+Optional: 
+- Deploy the Redis Enterprise admission controller.
+- a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
+- an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
+- patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
+- monitoring through Prometheus + Grafana and [preconfigured Redis dashboards](https://github.com/redis-field-engineering/redis-enterprise-observability/tree/main/grafana).
+
+With Active/Active:
+- A/A artifacts (Remote cluster CRDs - the 'RERC').
+- A CRDB (A/A database including secrets).
 
 ## Good to know
 
