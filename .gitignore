@@ -10,3 +10,4 @@ redis/cluster/modified-webhook.yaml
 redis/cluster/rec*.yaml
 redis/cluster/rerc*.yaml
 redis/database/reaadb.yaml
+redis/database/redb.yaml

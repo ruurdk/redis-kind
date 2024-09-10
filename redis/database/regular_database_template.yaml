@@ -1,0 +1,11 @@
+apiVersion: app.redislabs.com/v1alpha1
+kind: RedisEnterpriseDatabase
+metadata:
+  name: db1
+spec:
+  memorySize: 200MB
+  shardCount: 1
+  replication: true
+  tlsMode: enabled
+  databaseSecretName: db1secret
+  defaultUser: true 

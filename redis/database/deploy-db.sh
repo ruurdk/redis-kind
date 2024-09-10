@@ -17,7 +17,7 @@ then
     done
 
     # do the below (secret, db creation) in 2 steps or the admission controller will deny it
-    kubectl apply -f reaadb_secret.yaml
+    kubectl apply -f db_secret.yaml
     while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
 
     kubectl apply -f reaadb.yaml
@@ -50,6 +50,21 @@ then
     else
         echo "$(date) - Skipping replication link check with a single cluster."
     fi
-fi
+else
 
-# TODO implement non-A/A db creation.
+    # regular (non-A/A) db creation.
+    echo "$(date) - DEPLOYING Redis Enterprise database on k8s cluster 1" 
+
+    kubectl config use-context kind-c1
+    
+    cp regular_database_template.yaml redb.yaml
+
+    # do the below (secret, db creation) in 2 steps or the admission controller will deny it
+    kubectl apply -f db_secret.yaml
+    while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
+    
+    kubectl apply -f redb.yaml
+     # wait for resource
+    while ! kubectl get redb db1 ; do echo "Waiting for Redis db to become available."; sleep 1 ; done
+    while ! kubectl wait --for jsonpath="{.status.status}"=active --timeout=10s redb db1 ; do echo "Waiting for db1 status to be Active." ; sleep 5 ; done
+fi

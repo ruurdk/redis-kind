@@ -27,4 +27,9 @@ echo "_______________________________________"
 echo "Test A/A end to end connectivity:"
 echo "              Run the debug/testlink.sh script (it leverages redis-cli in a container)."
 
+# K8s nodes access.
+echo "_______________________________________"
+echo "Access k8s nodes (eg. to run a command on node 3 of cluster 1):"
+echo "              docker exec -it c1-worker3 ip route"
+
 echo "_______________________________________"
