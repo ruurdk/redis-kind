@@ -26,3 +26,5 @@ cd -
 cd redis/database
 ./deploy-db.sh
 cd -
+
+./help.sh
