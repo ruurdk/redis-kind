@@ -23,17 +23,15 @@ Basics:
 - A configurable number (default = 2) k8s clusters in Kind
 - Deploy [Redis Enterprise (operator)](https://redis.io/docs/latest/operate/kubernetes/architecture/operator/) in all clusters.
 - Create Redis clusters in all k8s clusters. 
+- Create a Redis database (geo-replicated CRDB in case of Active/Active).
 
 Optional: 
 - Deploy the Redis Enterprise admission controller.
+- Rack zone aware deployment.
 - a loadbalancer ([metallb](https://metallb.universe.tf/)) to let the clusters talk to each other through a "public" endpoint (in the Docker kind network).
 - an ingress controller ([ingress-nginx](https://github.com/kubernetes/ingress-nginx) / [haproxy-ingress](https://github.com/jcmoraisjr/haproxy-ingress)) to facilitate Redis Operator created Ingress resources.
 - patch k8s DNS (coredns) to resolve the (remote) cluster api and database.
 - monitoring through Prometheus + Grafana and [preconfigured Redis dashboards](https://github.com/redis-field-engineering/redis-enterprise-observability/tree/main/grafana).
-
-With Active/Active:
-- A/A artifacts (Remote cluster CRDs - the 'RERC').
-- A CRDB (A/A database including secrets).
 
 ## Good to know
 
@@ -47,7 +45,7 @@ With Active/Active:
 
 ### Minimum hardware requirements
 
-The minimum proper setup with 2 participating Redis clusters requires 16GB of RAM, a 30GB OS disk, and >4 *physical CPU cores*.
+The minimum proper setup with 2 participating Redis clusters (3 k8s worker nodes each) requires 16GB of RAM, a 30GB OS disk, and >4 *physical CPU cores*.
 
 Some tested configs that work:
 - physical i5-9600K (6 cores @ 4.5 GHz)
