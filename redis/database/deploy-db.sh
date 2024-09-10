@@ -71,7 +71,9 @@ else
     kubectl apply -f db_secret.yaml
     while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
     
-    kubectl apply -f redb.yaml
+    # retry this in case of "frozen REC" message.
+    while ! kubectl apply -f redb.yaml ; do echo "Waiting for Redis cluster to accept database specification."; sleep 5 ; done
+
      # wait for resource
     while ! kubectl get redb db1 ; do echo "Waiting for Redis db to become available."; sleep 1 ; done
     while ! kubectl wait --for jsonpath="{.status.status}"=active --timeout=10s redb db1 ; do echo "Waiting for db1 status to be Active." ; sleep 5 ; done
