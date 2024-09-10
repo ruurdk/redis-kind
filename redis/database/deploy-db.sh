@@ -15,6 +15,10 @@ then
     do
         yq -iy '.spec.participatingClusters += [{ "name" : "rerc'$c'"}]' reaadb.yaml
     done
+    # For rack zone awareness, add to yaml.
+    if [ "$rackzone_aware" == "yes" ]; then
+      yq -iy '.spec.globalConfigurations.rackAware = true' reaadb.yaml
+    fi
 
     # do the below (secret, db creation) in 2 steps or the admission controller will deny it
     kubectl apply -f db_secret.yaml
@@ -58,6 +62,10 @@ else
     kubectl config use-context kind-c1
     
     cp regular_database_template.yaml redb.yaml
+    # For rack zone awareness, add to yaml.
+    if [ "$rackzone_aware" == "yes" ]; then
+      yq -iy '.spec.rackAware = true' redb.yaml
+    fi
 
     # do the below (secret, db creation) in 2 steps or the admission controller will deny it
     kubectl apply -f db_secret.yaml

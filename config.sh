@@ -21,3 +21,5 @@ num_clusters=2
 enable_admissioncontroller=yes
 # WARNING, active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes
 active_active=yes
+rackzone_aware=no
+rackzone_zones=3

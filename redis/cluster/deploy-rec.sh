@@ -22,9 +22,14 @@ do
       yq -iy 'del(.spec.ingressOrRouteSpec)' rec$c.yaml
     fi
 
+    # For rack zone awareness, add node label to watch.
+    if [ "$rackzone_aware" == "yes" ]; then
+      yq -iy '.spec.rackAwarenessNodeLabel = "topology.kubernetes.io/zone"' rec$c.yaml
+    fi
+
     # Create a RE cluster
     kubectl apply -f rec$c.yaml
-    while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 1; done
+    while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 5; done
 
     # output creds.
     pw=$(kubectl get secret rec$c -o jsonpath="{.data.password}") 
