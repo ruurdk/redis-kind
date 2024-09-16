@@ -12,14 +12,18 @@ grafana_dashboards_release="https://github.com/redis-field-engineering/redis-ent
 grafana_dashboards_folder="grafana/dashboards/grafana_v9-11/software/basic/"
 
 # SETTINGS.
+## Kind/K8s
+num_clusters=2
+worker_nodes=3
+control_nodes=1
+## K8s infra
 install_loadbalancer=yes
 install_ingress=yes
 ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress
 install_monitoring=no
+## Redis
 patch_dns=yes
-num_clusters=2
 enable_admissioncontroller=yes
-# WARNING, active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes
-active_active=yes
 rackzone_aware=no
 rackzone_zones=3
+active_active=yes # WARNING, active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes

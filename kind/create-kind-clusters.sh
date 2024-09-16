@@ -11,6 +11,16 @@ do
     # generate cluster manifest from template.
     yq '. |= { name: "c'$c'" } + .' kind-cluster-template.yaml > kind-cluster-c$c.yaml
 
+    # add nodes.
+    for n in $(seq 1 $control_nodes);
+    do
+        yq -iy '.nodes += [ {"role": "control-plane"}]' kind-cluster-c$c.yaml
+    done
+    for n in $(seq 1 $worker_nodes);
+    do
+        yq -iy '.nodes += [ {"role": "worker"}]' kind-cluster-c$c.yaml
+    done
+
     # add network ranges.
     yq -iy '.networking.podSubnet = "10.1'$c'0.0.0/16"' kind-cluster-c$c.yaml
     yq -iy '.networking.serviceSubnet = "10.1'$c'1.0.0/16"' kind-cluster-c$c.yaml
