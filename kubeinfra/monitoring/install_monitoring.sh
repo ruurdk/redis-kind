@@ -4,7 +4,7 @@ source ../../config.sh
 
 for c in $(seq 1 $num_clusters);
 do
-    echo "$(date) - Installing Prmoetheus operator in cluster $c" 
+    echo "$(date) - Installing Prometheus operator in cluster $c" 
     
     kubectl config use-context kind-c$c
 

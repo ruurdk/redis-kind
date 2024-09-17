@@ -21,6 +21,7 @@ install_loadbalancer=yes
 install_ingress=yes
 ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress
 install_monitoring=no
+install_dashboard=no
 ## Redis
 patch_dns=yes
 enable_admissioncontroller=yes

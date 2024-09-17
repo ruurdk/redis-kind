@@ -17,5 +17,7 @@ sysctl -p
 ./install-docker-linux.sh
 ./install-kind.sh
 ./install-kubectl.sh
+# generally we try to use manifests but there are some add-ons that only have helm installer support.
+./install-helm.sh
 
 echo "$(date) - Prereq installation finished, please reboot to ensure shell reload (to have non-root access to docker)!"

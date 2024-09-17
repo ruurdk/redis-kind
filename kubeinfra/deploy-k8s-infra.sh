@@ -30,3 +30,12 @@ then
     ./install_monitoring.sh
     cd ..
 fi
+
+if [ "$install_dashboard" == "yes" ];
+then
+    echo "$(date) - Installing K8s dashboard"
+
+    cd dashboard
+    ./install_dashboard.sh
+    cd ..
+fi
