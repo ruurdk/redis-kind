@@ -10,6 +10,7 @@ ingresscontroller_release_haproxy_ingress=https://raw.githubusercontent.com/jcmo
 ingresscontroller_release_nginx_ingress="https://github.com/nginxinc/kubernetes-ingress.git --branch v3.6.1"
 grafana_dashboards_release="https://github.com/redis-field-engineering/redis-enterprise-observability.git --branch main"
 grafana_dashboards_folder="grafana/dashboards/grafana_v9-11/software/basic/"
+metrics_server_release=https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
 
 # SETTINGS.
 ## Kind/K8s
@@ -22,6 +23,7 @@ install_ingress=yes
 ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress
 install_monitoring=no
 install_dashboard=no
+install_metrics=no
 ## Redis
 patch_dns=yes
 enable_admissioncontroller=yes

@@ -39,3 +39,12 @@ then
     ./install_dashboard.sh
     cd ..
 fi
+
+if [ "$install_metrics" == "yes" ];
+then
+    echo "$(date) - Installing K8s metrics server"
+
+    cd metrics
+    ./install_metrics.sh
+    cd ..
+fi
