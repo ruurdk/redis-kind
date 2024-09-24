@@ -3,7 +3,7 @@
 # load vars
 source config.sh
 
-echo "$(date) - creating kind clusters and installing RE"
+echo "$(date) - Creating kind clusters and installing RE"
 
 ./sanity-check.sh
 
@@ -26,5 +26,9 @@ cd -
 cd redis/database
 ./deploy-db.sh
 cd -
+
+cd apps
+./install-apps.sh
+cd ..
 
 ./help.sh

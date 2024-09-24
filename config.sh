@@ -30,4 +30,9 @@ patch_dns=yes
 enable_admissioncontroller=yes
 rackzone_aware=no
 rackzone_zones=3
-active_active=yes # WARNING, active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes
+active_active=yes       # WARNING: active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes
+## Apps
+install_redisinsight=yes
+install_benchmark=no    # DISABLED by default as it generates load.
+
+

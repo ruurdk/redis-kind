@@ -1,3 +1,4 @@
+# taken from: https://redis.io/docs/latest/operate/redisinsight/install/install-on-k8s/
 # Redis Insight service with name 'redisinsight-service'
 apiVersion: v1
 kind: Service
