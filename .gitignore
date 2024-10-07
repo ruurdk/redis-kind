@@ -11,3 +11,4 @@ redis/cluster/rec*.yaml
 redis/cluster/rerc*.yaml
 redis/database/reaadb.yaml
 redis/database/redb.yaml
+redis/apps/redis-benchmark/redis-benchmark.yaml

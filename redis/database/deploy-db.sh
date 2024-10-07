@@ -7,6 +7,17 @@ if [ "$active_active" == "yes" ];
 then
     echo "$(date) - DEPLOYING Redis Enterprise A/A database on k8s cluster 1" 
 
+    # do the below (secret, db creation) in 2 steps or the admission controller will deny it
+    echo "$(date) - Create secrets on all participating clusters"
+    for c in $(seq 1 $num_clusters);
+    do
+        kubectl config use-context kind-c$c
+
+        kubectl apply -f db_secret.yaml
+        while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
+    done
+
+    # The database only requires creation on 1 side.
     kubectl config use-context kind-c1
 
     # Prepare reaadb manifest based on template.
@@ -19,10 +30,6 @@ then
     if [ "$rackzone_aware" == "yes" ]; then
       yq -iy '.spec.globalConfigurations.rackAware = true' reaadb.yaml
     fi
-
-    # do the below (secret, db creation) in 2 steps or the admission controller will deny it
-    kubectl apply -f db_secret.yaml
-    while ! kubectl get secret db1secret; do echo "Waiting for secret db1secret. CTRL-C to exit."; sleep 1; done
 
     kubectl apply -f reaadb.yaml
     # wait for resource
