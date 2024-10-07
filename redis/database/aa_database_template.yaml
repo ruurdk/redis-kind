@@ -6,9 +6,11 @@ spec:
   globalConfigurations:
     databaseSecretName: db1secret
     memorySize: 200MB
-    shardCount: 3
+    shardCount: 2
+    replication: true
     tlsMode: enabled
     defaultUser: true
+    evictionPolicy: volatile-lru
   participatingClusters:
       # will be generated based on number in the format: - name: rerc1
       

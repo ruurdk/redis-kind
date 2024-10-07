@@ -4,8 +4,9 @@ metadata:
   name: db1
 spec:
   memorySize: 200MB
-  shardCount: 1
+  shardCount: 2
   replication: true
   tlsMode: enabled
   databaseSecretName: db1secret
   defaultUser: true 
+  evictionPolicy: volatile-lru

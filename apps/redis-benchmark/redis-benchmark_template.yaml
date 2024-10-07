@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-benchmark-deployment
+  namespace: redis
+  labels:
+    app: redis-benchmark
+spec:
+  replicas: 1
+  selector:
+     matchLabels: 
+       app: redis-benchmark
+  template:
+    metadata:
+      labels:
+        app: redis-benchmark
+    spec:
+      containers:
+      - name: redis-benchmark-go
+        image: ruurdk/redis-benchmark-go:latest    
+      # args will be dynamically filled   
