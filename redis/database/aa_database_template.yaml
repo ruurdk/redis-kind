@@ -10,7 +10,7 @@ spec:
     replication: true
     tlsMode: enabled
     defaultUser: true
-    evictionPolicy: volatile-lru
+    evictionPolicy: allkeys-lru
   participatingClusters:
       # will be generated based on number in the format: - name: rerc1
       

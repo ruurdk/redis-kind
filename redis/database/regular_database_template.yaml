@@ -9,4 +9,4 @@ spec:
   tlsMode: enabled
   databaseSecretName: db1secret
   defaultUser: true 
-  evictionPolicy: volatile-lru
+  evictionPolicy: allkeys-lru
