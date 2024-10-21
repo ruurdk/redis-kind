@@ -89,6 +89,13 @@ EOF
         rec_api_hostname=$(kubectl get rec rec$c --output=jsonpath='{.spec.ingressOrRouteSpec.apiFqdnUrl}')
         sed "s/HOSTNAME/${rec_api_hostname}/g" ../../kubeinfra/ingress/ts-ssl-template.yaml | sed "s/SERVICE/rec$c/g" | sed "s/PORT/9443/g" | sed "s/TS_NAME/rec-api/g" | kubectl create -f -
         ;;
+      "contour")
+        # patch the ingress.class to some dummy value so we know for sure nginx won't pick up the Ingress and bind the port - as we want it on the TransportServer which can actually do SSL passthrough.     
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"ingressOrRouteSpec\": {\"ingressAnnotations\": {\"kubernetes.io/ingress.class\": \"none\"}, \"method\": \"ingress\"}}}"
+        # TODO create a HTTPProxy for the REC api.
+        rec_api_hostname=$(kubectl get rec rec$c --output=jsonpath='{.spec.ingressOrRouteSpec.apiFqdnUrl}')
+        sed "s/HOSTNAME/${rec_api_hostname}/g" ../../kubeinfra/ingress/httpproxy-template.yaml | sed "s/SERVICE/rec$c/g" | sed "s/PORT/9443/g" | sed "s/HP_NAME/rec-api/g" | kubectl create -f -        
+        ;;
       *)
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"
         ;;

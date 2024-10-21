@@ -25,6 +25,9 @@ do
       "nginx-ingress")
         ip=$(kubectl get svc/nginx-ingress -n nginx-ingress --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ;;
+      "contour")
+        ip=$(kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
       *)
         echo "$(date) - WARNING - couldn't get external IP for unknown ingress, DNS setup will be incorrect"
         ;;

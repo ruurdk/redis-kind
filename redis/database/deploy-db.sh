@@ -39,19 +39,38 @@ then
     # create networking across clusters for nginx-ingress (as it doesn't pick up the automated Ingress).
     if [ "$install_ingress" == "yes" ];
     then
-        if [ "$ingresscontroller_type" == "nginx-ingress" ];
-        then            
-            for c in $(seq 1 $num_clusters);
-            do
-                kubectl config use-context kind-c$c
+        case $ingresscontroller_type in 
+            "ingress-nginx" | "haproxy-ingress")
+                # nothing to do here, these are auto-wired by RE operator
+                ;;
+            "nginx-ingress")
+                for c in $(seq 1 $num_clusters);
+                do
+                    kubectl config use-context kind-c$c
 
-                # TODO hardwired again to db1 name.
-                while ! kubectl get svc/db1 ; do echo "Waiting for db1 service to become available."; sleep 5 ; done
-                db_port=$(kubectl get svc/db1 -o jsonpath="{.spec.ports[0].port}")
-                hostname=$(kubectl get ing/db1 -o jsonpath="{.spec.rules[0].host}")
-                sed "s/HOSTNAME/${hostname}/g" ts-ssl-template.yaml | sed "s/SERVICE/db1/g" | sed "s/PORT/${db_port}/g" | sed "s/TS_NAME/tsdb1/g" | kubectl create -f -
-            done
-        fi
+                    # TODO hardwired again to db1 name.
+                    while ! kubectl get svc/db1 ; do echo "Waiting for db1 service to become available."; sleep 5 ; done
+                    db_port=$(kubectl get svc/db1 -o jsonpath="{.spec.ports[0].port}")
+                    hostname=$(kubectl get ing/db1 -o jsonpath="{.spec.rules[0].host}")
+                    sed "s/HOSTNAME/${hostname}/g" ../../kubeinfra/ingress/ts-ssl-template.yaml | sed "s/SERVICE/db1/g" | sed "s/PORT/${db_port}/g" | sed "s/TS_NAME/tsdb1/g" | kubectl create -f -
+                done
+                ;;        
+            "contour")
+                for c in $(seq 1 $num_clusters);
+                do
+                    kubectl config use-context kind-c$c
+
+                    # TODO hardwired again to db1 name.
+                    while ! kubectl get svc/db1 ; do echo "Waiting for db1 service to become available."; sleep 5 ; done
+                    db_port=$(kubectl get svc/db1 -o jsonpath="{.spec.ports[0].port}")
+                    hostname=$(kubectl get ing/db1 -o jsonpath="{.spec.rules[0].host}")
+                    sed "s/HOSTNAME/${hostname}/g" ../../kubeinfra/ingress/httpproxy-template.yaml | sed "s/SERVICE/db1/g" | sed "s/PORT/${db_port}/g" | sed "s/HP_NAME/hpdb1/g" | kubectl create -f -
+                done
+                ;;
+            *)
+                echo "$(date) - WARNING - could not wire database ingress with unknown ingress, A/A database replication link will likely fail"
+                ;;
+        esac
     fi
 
     # wait for replication link to first remote cluster to get up

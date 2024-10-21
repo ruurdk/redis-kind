@@ -1,0 +1,13 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: HP_NAME
+spec:
+  virtualhost:
+    fqdn: HOSTNAME
+    tls:
+      passthrough: true
+  tcpproxy:
+    services:
+    - name: SERVICE
+      port: PORT

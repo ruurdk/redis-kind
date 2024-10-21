@@ -80,6 +80,13 @@ do
             cd ..
             rm -rf kubernetes-ingress/
             ;;
+        "contour")
+            echo "$(date) - Installing $ingresscontroller_type."
+            kubectl apply -f ${!releasename}
+
+            # wait for ingress controller to have a loadbalancer (external) ip.    
+            until kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done            
+            ;;
         *)
             echo "$(date) - Unknown Ingress $ingresscontroller_type, skipping installation."
             ;;

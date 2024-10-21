@@ -36,7 +36,8 @@ Optional:
 ## Good to know
 
 - There are multiple haproxy ingresses. One from [HAProxy Inc.](https://github.com/haproxytech/kubernetes-ingress) and one from [jcmoraisjr](https://github.com/jcmoraisjr/haproxy-ingress). This is tested with the latter one.
-- There are multiple nginx ingresses. So far this is tested with the [kubernetes 'ingress-nginx'](https://github.com/kubernetes/ingress-nginx). In addition. the [Nginx Inc. (F5) Ingress Nginx Controller](https://docs.nginx.com/nginx-ingress-controller/overview/design/) works, but does not allow SSL/TLS passthrough via regular Ingress Kubernetes resources, so routing will require (manual) creation of Custom [TransportServer](https://docs.nginx.com/nginx-ingress-controller/configuration/transportserver-resource/) resources.
+- There are multiple nginx ingresses. So far this is tested with the [kubernetes 'ingress-nginx'](https://github.com/kubernetes/ingress-nginx). 
+- There are more Ingresses that work, such as the [Nginx Inc. (F5) Ingress Nginx Controller](https://docs.nginx.com/nginx-ingress-controller/overview/design/) and [Contour](https://projectcontour.io/). However, they require (manual) creation of CRDs for SSL/TLS passthrough if regular Ingress Kubernetes resources are not supporting passthrough. E.g. [TransportServer](https://docs.nginx.com/nginx-ingress-controller/configuration/transportserver-resource/) for Nginx Inc. or [HTTPProxy](https://projectcontour.io/docs/1.30/config/api/) for Contour.
 
 ## Caveats / todos
 

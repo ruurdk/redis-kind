@@ -26,6 +26,9 @@ case $ingresscontroller_type in
         "nginx-ingress")
         lb_ip=$(kubectl get svc/nginx-ingress -n nginx-ingress --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ;;
+        "contour")
+        lb_ip=$(kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
         *)
         lb_ip="<UNKNOWN>"
         ;;
@@ -61,6 +64,9 @@ case $ingresscontroller_type in
         ;;
         "nginx-ingress")
         remote_lb_ip=$(kubectl get svc/nginx-ingress -n nginx-ingress --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
+        "contour")
+        remote_lb_ip=$(kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ;;
         *)
         remote_lb_ip="<UNKNOWN>"
