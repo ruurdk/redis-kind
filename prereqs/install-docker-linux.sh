@@ -53,6 +53,6 @@ if [ ! $(getent group docker) ];
 then
     groupadd docker
 fi
-usermod -aG docker $USER
+/usr/sbin/usermod -aG docker $USER
 
 echo "$(date) - NOTE: you need to log in/out or use newgrp docker to continue in this session"
