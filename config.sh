@@ -9,6 +9,7 @@ loadbalancer_release=https://raw.githubusercontent.com/metallb/metallb/v0.14.6/c
 ingresscontroller_release_ingress_nginx=https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
 ingresscontroller_release_haproxy_ingress=https://raw.githubusercontent.com/jcmoraisjr/haproxy-ingress/master/docs/haproxy-ingress.yaml
 ingresscontroller_release_nginx_ingress="https://github.com/nginxinc/kubernetes-ingress.git --branch v3.6.1"
+ingresscontroller_release_contour="https://projectcontour.io/quickstart/contour.yaml"
 grafana_dashboards_release="https://github.com/redis-field-engineering/redis-enterprise-observability.git --branch main"
 grafana_dashboards_folder="grafana/dashboards/grafana_v9-11/software/basic/"
 metrics_server_release=https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
@@ -21,7 +22,7 @@ control_nodes=1
 ## K8s infra
 install_loadbalancer=yes
 install_ingress=yes
-ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress
+ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress. contour
 install_monitoring=no
 install_dashboard=no
 install_metrics=no
@@ -32,7 +33,7 @@ rackzone_aware=no
 rackzone_zones=3
 active_active=yes       # WARNING: active_active will only work out of the box with install_ingress, install_loadbalancer & patch_dns = yes
 ## Apps
-install_redisinsight=yes
+install_redisinsight=no
 install_benchmark=no    # DISABLED by default as it generates load.
 
 
