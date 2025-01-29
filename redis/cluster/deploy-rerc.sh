@@ -24,6 +24,18 @@ do
             yq -iy '.spec.dbFqdnSuffix = "-db-rec'$k'-redis.lab"' rerc$k.yaml 
             yq -iy '.spec.secretName = "redis-enterprise-rerc'$k'"' rerc$k.yaml 
 
+            if [ "$active_active" == "yes" ];
+            then
+            if [ "$install_ingress" == "yes" ];
+            then
+            if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ];
+            then
+                # Patch API port on the RERC spec (no ingress).
+                yq -iy '.spec.apiPort = 9443' rerc$k.yaml 
+            fi
+            fi
+            fi
+
             # Apply the definition.
             kubectl apply -f rerc$k.yaml
         done

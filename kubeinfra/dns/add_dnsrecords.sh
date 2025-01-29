@@ -28,6 +28,12 @@ do
       "contour")
         ip=$(kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
         ;;
+      "no_ingress_use_loadbalancer")
+        # get the ip from the REC-API service loadbalancer.
+        ip=$(kubectl get svc/rec$c -n redis --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        # get the ip from the DB1 service loadbalancer.
+        db_ip=$(kubectl get svc/db1-load-balancer -n redis --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        ;;
       *)
         echo "$(date) - WARNING - couldn't get external IP for unknown ingress, DNS setup will be incorrect"
         ;;
@@ -35,9 +41,14 @@ do
 
     # add records for this cluster to hosts file
     # NOTE the line for the database is hardcoded for >>>db1<<< as CoreDNS doesn't support wildcards in hosts.
+    if [ "$ingresscontroller_type" != "no_ingress_use_loadbalancer" ];
+    then
+      db_ip=$ip
+    fi
+
     cat << EOF >> hosts.txt
   $ip api-rec$c-redis.lab
-  $ip db1-db-rec$c-redis.lab  
+  $db_ip db1-db-rec$c-redis.lab  
 EOF
 done
 

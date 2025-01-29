@@ -87,6 +87,9 @@ do
             # wait for ingress controller to have a loadbalancer (external) ip.    
             until kubectl get svc/envoy -n projectcontour --output=jsonpath='{.status.loadBalancer}' | grep "ingress"; do : ; done            
             ;;
+        "no_ingress_use_loadbalancer")
+            echo $(date) - Configuring A/A replication link to use database ports without Ingress.""
+            ;;
         *)
             echo "$(date) - Unknown Ingress $ingresscontroller_type, skipping installation."
             ;;

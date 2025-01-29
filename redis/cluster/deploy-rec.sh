@@ -27,6 +27,11 @@ do
       yq -iy '.spec.rackAwarenessNodeLabel = "topology.kubernetes.io/zone"' rec$c.yaml
     fi
 
+  #  if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ]; then
+  #    yq -iy '.spec.services.apiService.type = "LoadBalancer"' rec$c.yaml
+  #    yq -iy '.spec.servicesRiggerSpec.databaseServiceType = "load_balancer"' rec$c.yaml
+  #  fi
+
     # Create a RE cluster
     kubectl apply -f rec$c.yaml
     while ! kubectl get secret rec$c; do echo "Waiting for secret rec$c. CTRL-C to exit."; sleep 5; done
@@ -95,6 +100,12 @@ EOF
         # TODO create a HTTPProxy for the REC api.
         rec_api_hostname=$(kubectl get rec rec$c --output=jsonpath='{.spec.ingressOrRouteSpec.apiFqdnUrl}')
         sed "s/HOSTNAME/${rec_api_hostname}/g" ../../kubeinfra/ingress/httpproxy-template.yaml | sed "s/SERVICE/rec$c/g" | sed "s/PORT/9443/g" | sed "s/HP_NAME/rec-api/g" | kubectl create -f -        
+        ;;
+      "no_ingress_use_loadbalancer")
+        # patch the apiService to be type loadbalancer (to access 9443)
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"services\": {\"apiService\": {\"type\" : \"LoadBalancer\"}}}}"
+        # path the database service type to loadbalancer
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"servicesRiggerSpec\": {\"databaseServiceType\": \"load_balancer\"}}}"        
         ;;
       *)
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"

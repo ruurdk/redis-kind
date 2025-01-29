@@ -22,7 +22,9 @@ control_nodes=1
 ## K8s infra
 install_loadbalancer=yes
 install_ingress=yes
-ingresscontroller_type=ingress-nginx # options: ingress-nginx, haproxy-ingress, nginx-ingress. contour
+### options for ingresscontroller_type: ingress-nginx, haproxy-ingress, nginx-ingress. contour. 
+###     no_ingress_use_loadbalancer is a special: it will run the replication link through the database port without Ingress. You should still specify install_ingress=yes
+ingresscontroller_type=ingress-nginx
 install_monitoring=no
 install_dashboard=no
 install_metrics=no

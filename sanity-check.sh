@@ -76,7 +76,7 @@ fi
 # Valid ingress.
 if [ "$install_ingress" == "yes" ]; then
     case "$ingresscontroller_type" in
-        "ingress-nginx" | "haproxy-ingress" | "nginx-ingress" | "contour")
+        "ingress-nginx" | "haproxy-ingress" | "nginx-ingress" | "contour" | "no_ingress_use_loadbalancer")
             echo "$(date) - Validated ingress controller type: $ingresscontroller_type."
             ;;
         *)

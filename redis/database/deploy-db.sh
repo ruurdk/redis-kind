@@ -31,6 +31,17 @@ then
       yq -iy '.spec.globalConfigurations.rackAware = true' reaadb.yaml
     fi
 
+    # For Ingress-less (loadbalancer) deployments, specify a port number.    
+    if [ "$install_ingress" == "yes" ];
+    then
+        if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ];
+        then
+            # Patch API port on the RERC spec (no ingress). Random number between 13000 - 17000 (roughly).
+            DBPORT=$((13000 + $RANDOM % 1000))
+            yq -iy '.spec.globalConfigurations.databasePort = '$DBPORT reaadb.yaml 
+        fi
+    fi            
+
     kubectl apply -f reaadb.yaml
     # wait for resource
     while ! kubectl get reaadb db1 ; do echo "Waiting for Redis A/A db to become available."; sleep 1 ; done
@@ -42,6 +53,9 @@ then
         case $ingresscontroller_type in 
             "ingress-nginx" | "haproxy-ingress")
                 # nothing to do here, these are auto-wired by RE operator
+                ;;
+            "no_ingress_use_loadbalancer")
+                # nothing to do here in terms of ingress, dbs using replication through database port (loadbalancer)                
                 ;;
             "nginx-ingress")
                 for c in $(seq 1 $num_clusters);
@@ -71,6 +85,16 @@ then
                 echo "$(date) - WARNING - could not wire database ingress with unknown ingress, A/A database replication link will likely fail"
                 ;;
         esac
+    fi
+
+    # In case of A/A through LB, we need to refresh DNS records after the DB LBs are created so the replication link can come up.
+    if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ];
+    then
+        echo "$(date) - Refreshing DNS records to loadbalanced A/A databases."
+
+        cd ../../kubeinfra/dns
+        ./add_dnsrecords.sh
+        cd -
     fi
 
     # wait for replication link to first remote cluster to get up
