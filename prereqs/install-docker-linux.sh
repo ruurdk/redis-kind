@@ -33,7 +33,7 @@ esac
 
 case $ID in
     "ubuntu")
-        DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip
+        DEBIAN_FRONTEND=noninteractive apt-get install -yq python3-pip
         pip install  yq
         ;;
     "debian")
