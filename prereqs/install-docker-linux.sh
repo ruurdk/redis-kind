@@ -33,7 +33,8 @@ esac
 
 case $ID in
     "ubuntu")
-        snap install yq
+        apt-get install -y python3-pip
+        pip install  yq
         ;;
     "debian")
         apt install yq
