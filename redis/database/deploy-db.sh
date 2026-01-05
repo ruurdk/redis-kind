@@ -36,9 +36,7 @@ then
     then
         if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ];
         then
-            # Patch API port on the RERC spec (no ingress). Random number between 13000 - 17000 (roughly).
-            DBPORT=$((13000 + $RANDOM % 1000))
-            yq -iy '.spec.globalConfigurations.databasePort = '$DBPORT reaadb.yaml 
+            yq -iy '.spec.participatingClusters[].externalReplicationPort = '6379 reaadb.yaml
         fi
     fi            
 

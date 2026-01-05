@@ -18,6 +18,11 @@ do
     if [ "$active_active" == "yes" ]; then
       yq -iy '.spec.ingressOrRouteSpec.apiFqdnUrl = "api-rec'$c'-redis.lab"' rec$c.yaml 
       yq -iy '.spec.ingressOrRouteSpec.dbFqdnSuffix = "-db-rec'$c'-redis.lab"' rec$c.yaml 
+
+      # Using externalReplicationPort (no Ingress but LB) requires removing the whole ingressOrRouteSpec stanza
+      if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ]; then
+        yq -iy 'del(.spec.ingressOrRouteSpec)' rec$c.yaml
+      fi
     else
       yq -iy 'del(.spec.ingressOrRouteSpec)' rec$c.yaml
     fi
@@ -26,11 +31,6 @@ do
     if [ "$rackzone_aware" == "yes" ]; then
       yq -iy '.spec.rackAwarenessNodeLabel = "topology.kubernetes.io/zone"' rec$c.yaml
     fi
-
-  #  if [ "$ingresscontroller_type" == "no_ingress_use_loadbalancer" ]; then
-  #    yq -iy '.spec.services.apiService.type = "LoadBalancer"' rec$c.yaml
-  #    yq -iy '.spec.servicesRiggerSpec.databaseServiceType = "load_balancer"' rec$c.yaml
-  #  fi
 
     # Create a RE cluster
     kubectl apply -f rec$c.yaml
@@ -105,7 +105,9 @@ EOF
         # patch the apiService to be type loadbalancer (to access 9443)
         kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"services\": {\"apiService\": {\"type\" : \"LoadBalancer\"}}}}"
         # path the database service type to loadbalancer
-        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"servicesRiggerSpec\": {\"databaseServiceType\": \"load_balancer\"}}}"        
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"servicesRiggerSpec\": {\"databaseServiceType\": \"cluster_ip,headless,load_balancer\"}}}"        
+        # and forward the correct port
+        kubectl patch rec rec$c --type merge --patch "{\"spec\": {\"servicesRiggerSpec\": {\"databaseServicePortPolicy\": \"RedisDefaultPort\"}}}"        
         ;;
       *)
         echo "$(date) - UNKWOWN ingress controller $ingresscontroller_type: skipping REC annotations"

@@ -7,7 +7,7 @@ metadata:
 spec:
   # Add fields here
   nodes: 3  
-  # A/A routing - will be removed when A/A is not enabled
+  # A/A routing - will be removed when A/A is not enabled (or when using loadbalancer vs. ingress)
   ingressOrRouteSpec:
     #apiFqdnUrl: <generated>
     #dbFqdnSuffix: <generated>
